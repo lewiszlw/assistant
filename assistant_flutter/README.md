@@ -1,5 +1,5 @@
 # assistant_flutter
-个人助理app。
+个人助手app。
 
 ## 参考
 - flutter开发环境搭建：https://docs.flutter.dev/get-started/install/macos
