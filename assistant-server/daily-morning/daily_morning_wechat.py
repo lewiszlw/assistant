@@ -14,7 +14,7 @@ lover_birthday = config.LOVER_BIRTHDAY  # 例如 02-01
 
 # 可通过微信公众平台测试号申请
 app_id = os.environ["WECHAT_APP_ID"]
-app_secret = os.environ["WETCHAT_APP_SECRET"]
+app_secret = os.environ["WECHAT_APP_SECRET"]
 
 user_ids = config.WECHAT_USER_IDS
 template_id = config.WECHAT_TEMPLATE_ID
