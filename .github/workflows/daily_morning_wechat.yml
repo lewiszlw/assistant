@@ -1,0 +1,27 @@
+name: daily_morning_wechat
+on:
+  schedule:
+  - cron:  '0 0 * * *'  # 北京时间8点
+  workflow_dispatch:
+
+jobs:
+  send_message:
+    runs-on: ubuntu-latest
+    name: send morning to your girlfriend
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        ref: master
+
+    - name: sender
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+        architecture: 'x64'
+    - run: pip install -r ./assistant-server/daily-morning/requirements.txt && python ./assistant-server/daily-morning/daily_morning_wechat.py
+
+    env:
+      WECHAT_APP_ID: ${{ secrets.WECHAT_APP_ID }}
+      WECHAT_APP_SECRET: ${{ secrets.WECHAT_APP_SECRET }}
