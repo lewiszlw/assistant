@@ -1,30 +1,33 @@
+const String alarmTable = 'alarm_clock';
+const String alarmColumnId = 'id';
+const String alarmColumnTitle = 'title';
+const String alarmColumnDateTime = 'alarmDateTime';
+
 class AlarmInfo {
   int? id;
   String? title;
   DateTime? alarmDateTime;
-  bool? isPending;
-  int? gradientColorIndex;
 
-  AlarmInfo(
-      {this.id,
-      this.title,
-      this.alarmDateTime,
-      this.isPending,
-      this.gradientColorIndex});
+  AlarmInfo({
+    this.id,
+    this.title,
+    this.alarmDateTime,
+  });
 
   factory AlarmInfo.fromMap(Map<String, dynamic> json) => AlarmInfo(
         id: json["id"],
         title: json["title"],
         alarmDateTime: DateTime.parse(json["alarmDateTime"]),
-        isPending: json["isPending"],
-        gradientColorIndex: json["gradientColorIndex"],
       );
 
   Map<String, dynamic> toMap() => {
         "id": id,
         "title": title,
         "alarmDateTime": alarmDateTime!.toIso8601String(),
-        "isPending": isPending,
-        "gradientColorIndex": gradientColorIndex,
       };
+  
+  @override
+  String toString() {
+    return 'AlarmInfo{id: $id, name: $title, alarmDateTime: $alarmDateTime}';
+  }
 }
