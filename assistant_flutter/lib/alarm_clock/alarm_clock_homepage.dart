@@ -37,18 +37,6 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
     });
   }
 
-  // 构建闹钟widget列表
-  ListView buildAlarmItemsListView() {
-    return ListView(
-        key: UniqueKey(), // 否则list更新会有问题
-        children: currentAlarmInfos
-            .map((e) => AlarmItemWidget(
-                  alarmInfo: e,
-                  deleteAlarmCallback: deleteAlarmInfo,
-                ))
-            .toList());
-  }
-
   // 新增闹钟
   void insertAlarmInfo(String title, DateTime alarmDateTime) {
     _alarmHelper.insertAlarm(AlarmInfo(
@@ -62,6 +50,19 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
   void deleteAlarmInfo(int id) {
     _alarmHelper.delete(id);
     loadAlarmInfos();
+  }
+
+  // 构建闹钟widget列表
+  ListView buildAlarmItemsListView() {
+    return ListView(
+        key: UniqueKey(), // 否则list更新会有问题
+        physics: AlwaysScrollableScrollPhysics(),
+        children: currentAlarmInfos
+            .map((e) => AlarmItemWidget(
+                  alarmInfo: e,
+                  deleteAlarmCallback: deleteAlarmInfo,
+                ))
+            .toList());
   }
 
   @override
@@ -86,7 +87,7 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
   }
 }
 
-class AlarmItemWidget extends StatefulWidget {
+class AlarmItemWidget extends StatelessWidget {
   AlarmItemWidget(
       {super.key, required this.alarmInfo, required this.deleteAlarmCallback});
 
@@ -94,18 +95,8 @@ class AlarmItemWidget extends StatefulWidget {
   DeleteAlarmCallback deleteAlarmCallback;
 
   @override
-  State<StatefulWidget> createState() =>
-      _AlarmItemWidgetState(alarmInfo: alarmInfo);
-}
-
-class _AlarmItemWidgetState extends State<AlarmItemWidget> {
-  _AlarmItemWidgetState({required this.alarmInfo});
-
-  AlarmInfo alarmInfo;
-
-  @override
   Widget build(BuildContext context) {
-    var gradientColors = GradientTemplate.gradientTemplate[1].colors;
+    var gradientColors = GradientTemplate.getGradientColors(alarmInfo.id!);
 
     return Container(
       // color: Colors.grey,
@@ -127,7 +118,7 @@ class _AlarmItemWidgetState extends State<AlarmItemWidget> {
             offset: Offset(4, 4),
           ),
         ],
-        borderRadius: BorderRadius.all(Radius.circular(24)),
+        borderRadius: const BorderRadius.all(Radius.circular(24)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,15 +128,16 @@ class _AlarmItemWidgetState extends State<AlarmItemWidget> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Icon(
+                  const Icon(
                     Icons.label,
                     color: Colors.white,
                     size: 24,
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
                     "闹钟名称 id ${alarmInfo.id!}",
-                    style: TextStyle(color: Colors.white, fontFamily: 'avenir'),
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'avenir'),
                   ),
                 ],
               ),
@@ -178,7 +170,7 @@ class _AlarmItemWidgetState extends State<AlarmItemWidget> {
                   color: Colors.white,
                   onPressed: () {
                     print("删除闹钟 ${alarmInfo.id}");
-                    widget.deleteAlarmCallback(alarmInfo.id!);
+                    deleteAlarmCallback(alarmInfo.id!);
                   }),
             ],
           ),

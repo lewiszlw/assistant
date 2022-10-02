@@ -34,4 +34,8 @@ class GradientTemplate {
     GradientColors(GradientColors.mango),
     GradientColors(GradientColors.fire),
   ];
+
+  static List<Color> getGradientColors(int id) {
+    return gradientTemplate[id % gradientTemplate.length].colors;
+  }
 }
