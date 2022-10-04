@@ -29,6 +29,7 @@ class AlarmHelper {
           $alarmColumnId integer primary key autoincrement, 
           $alarmColumnTitle text not null,
           $alarmColumnRing integer not null,
+          $alarmColumnRepeat integer not null,
           $alarmColumnDateTime text not null)
         ''');
       },

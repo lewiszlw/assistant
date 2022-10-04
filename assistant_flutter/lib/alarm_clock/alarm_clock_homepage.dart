@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'alarm_clock_helper.dart';
 import 'alarm_clock_model.dart';
 import 'theme_data.dart';
@@ -18,9 +19,14 @@ class AlarmClockHomepage extends StatefulWidget {
 class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
   List<AlarmInfo> currentAlarmInfos = [];
   AlarmHelper _alarmHelper = AlarmHelper();
+  DateTime? _alarmTime;
+  String _alarmTimeString = "";
+  bool _isRepeatSelected = false;
+  String _inputedTitle = "";
 
   @override
   void initState() {
+    _alarmTime = DateTime.now();
     // 初始化数据库
     _alarmHelper.initializeDatabase().then((value) {
       print("alarm_clock database initialized.");
@@ -39,10 +45,11 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
   }
 
   // 新增闹钟
-  void insertAlarmInfo(String title, DateTime alarmDateTime) {
+  void insertAlarmInfo(String title, bool repeat, DateTime alarmDateTime) {
     _alarmHelper.insertAlarm(AlarmInfo(
       title: title,
       ring: 1,
+      repeat: repeat ? 1 : 0,
       alarmDateTime: alarmDateTime,
     ));
     loadAlarmInfos();
@@ -85,8 +92,94 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("新增闹钟");
-          insertAlarmInfo("测试", DateTime.now());
+          // 重置字段
+          _alarmTimeString = DateFormat('HH:mm').format(DateTime.now());
+          _isRepeatSelected = false;
+          _inputedTitle = "";
+
+          // 用于在底部打开弹框的效果
+          showModalBottomSheet(
+            useRootNavigator: true,
+            context: context,
+            clipBehavior: Clip.antiAlias,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+            ),
+            constraints: BoxConstraints(maxHeight: 300),
+            builder: (context) {
+              return StatefulBuilder(
+                builder: (context, setModalState) {
+                  return Container(
+                    padding: const EdgeInsets.fromLTRB(30, 30, 30, 5),
+                    child: Column(
+                      children: [
+                        TextButton(
+                          onPressed: () async {
+                            var selectedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (selectedTime != null) {
+                              final now = DateTime.now();
+                              var selectedDateTime = DateTime(
+                                  now.year,
+                                  now.month,
+                                  now.day,
+                                  selectedTime.hour,
+                                  selectedTime.minute);
+                              _alarmTime = selectedDateTime;
+                              setModalState(() {
+                                _alarmTimeString = DateFormat('HH:mm')
+                                    .format(selectedDateTime);
+                              });
+                            }
+                          },
+                          child: Text(
+                            _alarmTimeString,
+                            style: const TextStyle(fontSize: 32),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text('Repeat'),
+                          trailing: Switch(
+                            onChanged: (value) {
+                              setModalState(() {
+                                _isRepeatSelected = value;
+                              });
+                            },
+                            value: _isRepeatSelected,
+                          ),
+                        ),
+                        TextField(
+                          decoration: const InputDecoration(
+                            labelText: "Alarm Title",
+                            prefixIcon: Icon(Icons.title),
+                          ),
+                          onChanged: (value) {
+                            print("输入闹钟title: ${value}");
+                            _inputedTitle = value;
+                          },
+                        ),
+                        const SizedBox(height: 20, ),
+                        FloatingActionButton.extended(
+                          onPressed: () {
+                            print("新增闹钟");
+                            insertAlarmInfo(_inputedTitle, _isRepeatSelected,
+                                _alarmTime!);
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.alarm),
+                          label: Text('Save'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          );
         },
         tooltip: "Create new one",
         child: const Icon(Icons.add),
@@ -111,7 +204,6 @@ class AlarmItemWidget extends StatelessWidget {
     var gradientColors = GradientTemplate.getGradientColors(alarmInfo.id!);
 
     return Container(
-      // color: Colors.grey,
       margin: const EdgeInsets.only(
           top: 10, bottom: 10, left: 10, right: 10), // 容器外补白
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2), // 容器内补白
@@ -149,7 +241,7 @@ class AlarmItemWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    "闹钟名称 id ${alarmInfo.id!}",
+                    "${alarmInfo.title} id ${alarmInfo.id!}",
                     style: const TextStyle(
                         color: Colors.white, fontFamily: 'avenir'),
                   ),
@@ -173,9 +265,9 @@ class AlarmItemWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text(
-                "闹钟时间",
-                style: TextStyle(
+              Text(
+                DateFormat('HH:mm').format(alarmInfo.alarmDateTime),
+                style: const TextStyle(
                     color: Colors.white,
                     fontFamily: 'avenir',
                     fontSize: 24,
