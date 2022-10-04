@@ -28,6 +28,7 @@ class AlarmHelper {
           create table $alarmTable ( 
           $alarmColumnId integer primary key autoincrement, 
           $alarmColumnTitle text not null,
+          $alarmColumnRing integer not null,
           $alarmColumnDateTime text not null)
         ''');
       },
@@ -57,5 +58,10 @@ class AlarmHelper {
     var db = await database;
     return await db
         .delete(alarmTable, where: '$alarmColumnId = ?', whereArgs: [id]);
+  }
+
+  Future<int> update(AlarmInfo alarmInfo) async {
+    var db = await database;
+    return await db.update(alarmTable, alarmInfo.toMap(), where: '$alarmColumnId = ?', whereArgs: [alarmInfo.id]);
   }
 }

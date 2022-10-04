@@ -6,6 +6,7 @@ import 'theme_data.dart';
 /// 即时闹钟首页
 
 typedef DeleteAlarmCallback = void Function(int alarmId);
+typedef UpdateAlarmCallback = void Function(AlarmInfo alarmInfo);
 
 class AlarmClockHomepage extends StatefulWidget {
   AlarmClockHomepage({super.key});
@@ -41,6 +42,7 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
   void insertAlarmInfo(String title, DateTime alarmDateTime) {
     _alarmHelper.insertAlarm(AlarmInfo(
       title: title,
+      ring: 1,
       alarmDateTime: alarmDateTime,
     ));
     loadAlarmInfos();
@@ -52,15 +54,21 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
     loadAlarmInfos();
   }
 
+  void updateAlarmInfo(AlarmInfo alarmInfo) {
+    _alarmHelper.update(alarmInfo);
+    loadAlarmInfos();
+  }
+
   // 构建闹钟widget列表
   ListView buildAlarmItemsListView() {
     return ListView(
         key: UniqueKey(), // 否则list更新会有问题
-        physics: AlwaysScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         children: currentAlarmInfos
             .map((e) => AlarmItemWidget(
                   alarmInfo: e,
                   deleteAlarmCallback: deleteAlarmInfo,
+                  updateAlarmCallback: updateAlarmInfo,
                 ))
             .toList());
   }
@@ -89,10 +97,14 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
 
 class AlarmItemWidget extends StatelessWidget {
   AlarmItemWidget(
-      {super.key, required this.alarmInfo, required this.deleteAlarmCallback});
+      {super.key,
+      required this.alarmInfo,
+      required this.deleteAlarmCallback,
+      required this.updateAlarmCallback});
 
   AlarmInfo alarmInfo;
   DeleteAlarmCallback deleteAlarmCallback;
+  UpdateAlarmCallback updateAlarmCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -103,22 +115,24 @@ class AlarmItemWidget extends StatelessWidget {
       margin: const EdgeInsets.only(
           top: 10, bottom: 10, left: 10, right: 10), // 容器外补白
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2), // 容器内补白
+      // 背景装饰
       decoration: BoxDecoration(
-        // 背景装饰
+        // 背景渐变
         gradient: LinearGradient(
           colors: gradientColors,
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
         boxShadow: [
+          // 阴影
           BoxShadow(
             color: gradientColors.last.withOpacity(0.4),
             blurRadius: 8,
             spreadRadius: 2,
-            offset: Offset(4, 4),
+            offset: const Offset(4, 4),
           ),
         ],
-        borderRadius: const BorderRadius.all(Radius.circular(24)),
+        borderRadius: const BorderRadius.all(Radius.circular(24)), // 圆角
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,8 +158,10 @@ class AlarmItemWidget extends StatelessWidget {
               Switch(
                 onChanged: (bool value) {
                   print("闹钟切换");
+                  alarmInfo.ring = value ? 1 : 0;
+                  updateAlarmCallback(alarmInfo);
                 },
-                value: true,
+                value: alarmInfo.ring == 1 ? true : false,
                 activeColor: Colors.white,
               ),
             ],
