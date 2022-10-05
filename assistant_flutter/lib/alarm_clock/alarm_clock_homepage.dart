@@ -1,8 +1,10 @@
+// import 'package:assistant_flutter/utils/notification_util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'alarm_clock_helper.dart';
 import 'alarm_clock_model.dart';
 import 'theme_data.dart';
+import '../utils/notification_util.dart';
 
 /// 即时闹钟首页
 
@@ -279,6 +281,7 @@ class AlarmItemWidget extends StatelessWidget {
                   onPressed: () {
                     print("删除闹钟 ${alarmInfo.id}");
                     deleteAlarmCallback(alarmInfo.id!);
+                    zonedScheduleNotification("即刻闹钟", alarmInfo.title ?? "");
                   }),
             ],
           ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'utils/notification_util.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    requestNotificationPermissions();
     return Scaffold(
         appBar: AppBar(title: const Text("个人助理工具集")),
         body: Column(

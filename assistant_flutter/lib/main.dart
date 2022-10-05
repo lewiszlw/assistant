@@ -1,8 +1,8 @@
 import 'package:assistant_flutter/alarm_clock/alarm_clock_homepage.dart';
 import 'package:assistant_flutter/comming_soon_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'homepage.dart';
+import 'utils/notification_util.dart';
 
 class AssistantApp extends StatelessWidget {
   @override
@@ -17,4 +17,11 @@ class AssistantApp extends StatelessWidget {
   }
 }
 
-void main() async => runApp(AssistantApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await configureLocalTimeZone();
+  NotificationUtil().init();
+
+  runApp(AssistantApp());
+}
