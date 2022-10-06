@@ -196,22 +196,34 @@ Future<void> showNotificationCustomSound() async {
   );
 }
 
-Future<void> zonedScheduleNotification(String title, String body) async {
+Future<void> zonedScheduleNotification(String title, String body, DateTime dateTime) async {
+  const AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails(
+    'your channel id',
+    'your channel name',
+    channelDescription: 'your channel description',
+    sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+  );
+  const DarwinNotificationDetails darwinNotificationDetails =
+      DarwinNotificationDetails(sound: 'a_long_cold_sting.wav');
+  const NotificationDetails notificationDetails = NotificationDetails(
+    android: androidNotificationDetails,
+    iOS: darwinNotificationDetails,
+    macOS: darwinNotificationDetails,
+  );
+
   await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
       title,
       body,
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-      const NotificationDetails(
-          android: AndroidNotificationDetails(
-              'your channel id', 'your channel name',
-              channelDescription: 'your channel description')),
+      tz.TZDateTime.from(dateTime, tz.local),
+      notificationDetails,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime);
 }
 
-Future<void> _cancelAllNotifications() async {
+Future<void> cancelAllNotifications() async {
   await flutterLocalNotificationsPlugin.cancelAll();
 }
 
@@ -246,6 +258,6 @@ Future<void> requestNotificationPermissions() async {
         );
   } else if (Platform.isAndroid) {
     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+        AndroidFlutterLocalNotificationsPlugin>();
   }
 }

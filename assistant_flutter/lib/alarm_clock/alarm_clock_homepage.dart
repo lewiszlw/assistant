@@ -164,12 +164,14 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
                             _inputedTitle = value;
                           },
                         ),
-                        const SizedBox(height: 20, ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         FloatingActionButton.extended(
                           onPressed: () {
                             print("新增闹钟");
-                            insertAlarmInfo(_inputedTitle, _isRepeatSelected,
-                                _alarmTime!);
+                            insertAlarmInfo(
+                                _inputedTitle, _isRepeatSelected, _alarmTime!);
                             Navigator.of(context).pop();
                           },
                           icon: Icon(Icons.alarm),
@@ -281,7 +283,8 @@ class AlarmItemWidget extends StatelessWidget {
                   onPressed: () {
                     print("删除闹钟 ${alarmInfo.id}");
                     deleteAlarmCallback(alarmInfo.id!);
-                    zonedScheduleNotification("即刻闹钟", alarmInfo.title ?? "");
+                    zonedScheduleNotification(
+                        "即时闹钟", alarmInfo.title ?? "", alarmInfo.alarmDateTime);
                   }),
             ],
           ),
