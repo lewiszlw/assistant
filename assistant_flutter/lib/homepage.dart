@@ -40,7 +40,7 @@ class Homepage extends StatelessWidget {
                 ),
                 ToolItemWidget(
                   toolName: "每日看点",
-                  routeName: "comming_soon_page",
+                  routeName: "daily_article_homepage",
                   iconData: Icons.article,
                   color: Colors.lightGreen,
                 ),

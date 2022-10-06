@@ -3,7 +3,11 @@
 
 功能
 - [x] 每日早安（wechat）
-- [ ] 即时闹钟（flutter）
+- [x] 即时闹钟（flutter）
 - [ ] 电影推荐
-- [ ] 每日技术新闻
+- [ ] 每日看点
 
+项目结构
+- assistant-server: 作为web server提供API
+- assistant-script: 爬虫等脚本
+- assistant_flutter: flutter客户端

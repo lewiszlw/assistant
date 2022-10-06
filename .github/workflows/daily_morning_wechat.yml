@@ -20,7 +20,7 @@ jobs:
       with:
         python-version: '3.x'
         architecture: 'x64'
-    - run: pip install -r ./assistant-server/daily-morning/requirements.txt && python ./assistant-server/daily-morning/daily_morning_wechat.py
+    - run: pip install -r ./assistant-script/daily-morning/requirements.txt && python ./assistant-script/daily-morning/daily_morning_wechat.py
 
     env:
       WECHAT_APP_ID: ${{ secrets.WECHAT_APP_ID }}
