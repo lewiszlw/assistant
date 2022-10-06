@@ -16,34 +16,85 @@ class Homepage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ToolItemWidget(
-                    toolName: "即时闹钟",
-                    routeName: "alarm_clock_homepage",
-                    iconData: Icons.alarm),
+                  toolName: "即时闹钟",
+                  routeName: "alarm_clock_homepage",
+                  iconData: Icons.alarm,
+                  color: Colors.amber,
+                ),
                 ToolItemWidget(
-                    toolName: "电影推荐",
-                    routeName: "comming_soon_page",
-                    iconData: Icons.movie),
-                ToolItemWidget(
-                    toolName: "每日看点",
-                    routeName: "comming_soon_page",
-                    iconData: Icons.article),
+                  toolName: "电影推荐",
+                  routeName: "comming_soon_page",
+                  iconData: Icons.movie,
+                  color: Colors.deepOrange,
+                ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ToolItemWidget(
-                    toolName: "待办速记",
-                    routeName: "comming_soon_page",
-                    iconData: Icons.check_box),
+                  toolName: "待办速记",
+                  routeName: "comming_soon_page",
+                  iconData: Icons.check_box,
+                  color: Colors.grey,
+                ),
                 ToolItemWidget(
-                    toolName: "xxx",
-                    routeName: "comming_soon_page",
-                    iconData: Icons.alarm),
+                  toolName: "每日看点",
+                  routeName: "comming_soon_page",
+                  iconData: Icons.article,
+                  color: Colors.lightGreen,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
                 ToolItemWidget(
-                    toolName: "xxx",
-                    routeName: "comming_soon_page",
-                    iconData: Icons.alarm),
+                  toolName: "TODO",
+                  routeName: "comming_soon_page",
+                  iconData: Icons.check_box,
+                  color: Colors.lightBlue,
+                ),
+                ToolItemWidget(
+                  toolName: "TODO",
+                  routeName: "comming_soon_page",
+                  iconData: Icons.article,
+                  color: Colors.lime,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ToolItemWidget(
+                  toolName: "TODO",
+                  routeName: "comming_soon_page",
+                  iconData: Icons.check_box,
+                  color: Colors.cyan,
+                ),
+                ToolItemWidget(
+                  toolName: "TODO",
+                  routeName: "comming_soon_page",
+                  iconData: Icons.article,
+                  color: Colors.indigo,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ToolItemWidget(
+                  toolName: "TODO",
+                  routeName: "comming_soon_page",
+                  iconData: Icons.check_box,
+                  color: Colors.teal,
+                ),
+                ToolItemWidget(
+                  toolName: "TODO",
+                  routeName: "comming_soon_page",
+                  iconData: Icons.article,
+                  color: Colors.lightGreen,
+                ),
               ],
             ),
           ],
@@ -56,20 +107,33 @@ class ToolItemWidget extends StatelessWidget {
       {super.key,
       required this.toolName,
       required this.routeName,
-      required this.iconData});
+      required this.iconData,
+      required this.color});
 
   String toolName;
   String routeName;
   IconData iconData;
+  MaterialColor color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-      child: OutlinedButton.icon(
+      width: 210,
+      height: 100,
+      child: Card(
+        color: color,
+        elevation: 20,
+        shadowColor: Colors.green,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: TextButton.icon(
           icon: Icon(iconData),
           onPressed: () => {Navigator.pushNamed(context, routeName)},
-          label: Text(toolName)),
+          label: Text(
+            toolName,
+            style: const TextStyle(fontSize: 30),
+          ),
+        ),
+      ),
     );
   }
 }
