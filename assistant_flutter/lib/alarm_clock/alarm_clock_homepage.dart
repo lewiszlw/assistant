@@ -1,9 +1,8 @@
-// import 'package:assistant_flutter/utils/notification_util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'alarm_clock_helper.dart';
 import 'alarm_clock_model.dart';
-import 'theme_data.dart';
+import 'alarm_clock_theme_data.dart';
 import '../utils/notification_util.dart';
 
 /// 即时闹钟首页
@@ -21,17 +20,18 @@ class AlarmClockHomepage extends StatefulWidget {
 class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
   List<AlarmInfo> currentAlarmInfos = [];
   AlarmHelper _alarmHelper = AlarmHelper();
-  DateTime? _alarmTime;
+  DateTime? _pickedAlarmTime;
   String _alarmTimeString = "";
   bool _isRepeatSelected = false;
   String _inputedTitle = "";
 
   @override
   void initState() {
-    _alarmTime = DateTime.now();
+    _pickedAlarmTime = DateTime.now();
     // 初始化数据库
     _alarmHelper.initializeDatabase().then((value) {
-      print("alarm_clock database initialized.");
+      print("初始化alarm_clock数据库");
+      deleteOutdatedAlarms();
       loadAlarmInfos();
     });
     super.initState();
@@ -39,31 +39,48 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
 
   void loadAlarmInfos() {
     _alarmHelper.getAlarms().then((result) {
-      print("load alarms: $result");
+      print("加载所有闹钟: $result");
       setState(() {
         currentAlarmInfos = result;
       });
     });
   }
 
+  void deleteOutdatedAlarms() {
+    _alarmHelper.getAlarms().then((alarmInfos) {
+      for (var element in alarmInfos) {
+        if (element.repeat == 0 &&
+            element.alarmDateTime.isBefore(DateTime.now())) {
+          print("删除过期闹钟: $element");
+          _alarmHelper.delete(element.id!);
+        }
+      }
+    });
+  }
+
   // 新增闹钟
   void insertAlarmInfo(String title, bool repeat, DateTime alarmDateTime) {
+    print("新增闹钟: $title, $repeat, $alarmDateTime");
     _alarmHelper.insertAlarm(AlarmInfo(
       title: title,
       ring: 1,
       repeat: repeat ? 1 : 0,
       alarmDateTime: alarmDateTime,
     ));
+    // 定时发送通知
+    zonedScheduleNotification("即时闹钟", title, alarmDateTime);
     loadAlarmInfos();
   }
 
   // 删除闹钟
   void deleteAlarmInfo(int id) {
+    print("删除闹钟 id: $id");
     _alarmHelper.delete(id);
     loadAlarmInfos();
   }
 
   void updateAlarmInfo(AlarmInfo alarmInfo) {
+    print("更新闹钟: $alarmInfo");
     _alarmHelper.update(alarmInfo);
     loadAlarmInfos();
   }
@@ -131,7 +148,11 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
                                   now.day,
                                   selectedTime.hour,
                                   selectedTime.minute);
-                              _alarmTime = selectedDateTime;
+                              // 如果时间小于now，则为下一天
+                              if (selectedDateTime.isBefore(DateTime.now())) {
+                                selectedDateTime = selectedDateTime.add(Duration(days: 1));
+                              }
+                              _pickedAlarmTime = selectedDateTime;
                               setModalState(() {
                                 _alarmTimeString = DateFormat('HH:mm')
                                     .format(selectedDateTime);
@@ -169,13 +190,16 @@ class _AlarmClockHomepageState extends State<AlarmClockHomepage> {
                         ),
                         FloatingActionButton.extended(
                           onPressed: () {
-                            print("新增闹钟");
+                            if (_pickedAlarmTime!.isBefore(DateTime.now())) {
+                                _pickedAlarmTime = _pickedAlarmTime!.add(Duration(days: 1));
+                            }
                             insertAlarmInfo(
-                                _inputedTitle, _isRepeatSelected, _alarmTime!);
+                                _inputedTitle, _isRepeatSelected, _pickedAlarmTime!);
+                            // 关闭modal
                             Navigator.of(context).pop();
                           },
-                          icon: Icon(Icons.alarm),
-                          label: Text('Save'),
+                          icon: const Icon(Icons.alarm),
+                          label: const Text('Save'),
                         ),
                       ],
                     ),
@@ -245,7 +269,7 @@ class AlarmItemWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    "${alarmInfo.title} id ${alarmInfo.id!}",
+                    "${alarmInfo.title}",
                     style: const TextStyle(
                         color: Colors.white, fontFamily: 'avenir'),
                   ),
@@ -253,7 +277,6 @@ class AlarmItemWidget extends StatelessWidget {
               ),
               Switch(
                 onChanged: (bool value) {
-                  print("闹钟切换");
                   alarmInfo.ring = value ? 1 : 0;
                   updateAlarmCallback(alarmInfo);
                 },
@@ -281,10 +304,7 @@ class AlarmItemWidget extends StatelessWidget {
                   icon: Icon(Icons.delete),
                   color: Colors.white,
                   onPressed: () {
-                    print("删除闹钟 ${alarmInfo.id}");
                     deleteAlarmCallback(alarmInfo.id!);
-                    zonedScheduleNotification(
-                        "即时闹钟", alarmInfo.title ?? "", alarmInfo.alarmDateTime);
                   }),
             ],
           ),

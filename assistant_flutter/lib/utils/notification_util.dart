@@ -3,10 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -71,7 +68,7 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 class NotificationUtil {
   final FlutterLocalNotificationsPlugin np = FlutterLocalNotificationsPlugin();
 
-  /// main 初始化
+  /// main 函数中调用进行初始化
   init() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
@@ -130,6 +127,7 @@ class NotificationUtil {
       requestSoundPermission: false,
       onDidReceiveLocalNotification:
           (int id, String? title, String? body, String? payload) async {
+        print("onDidReceiveLocalNotification: $id, $title, $body, $payload");
         didReceiveLocalNotificationStream.add(
           ReceivedNotification(
             id: id,
@@ -151,6 +149,7 @@ class NotificationUtil {
       initializationSettings,
       onDidReceiveNotificationResponse:
           (NotificationResponse notificationResponse) {
+        print("onDidReceiveNotificationResponse: $notificationResponse");
         switch (notificationResponse.notificationResponseType) {
           case NotificationResponseType.selectedNotification:
             selectNotificationStream.add(notificationResponse.payload);
@@ -165,35 +164,6 @@ class NotificationUtil {
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
   }
-}
-
-Future<void> showNotificationCustomSound() async {
-  print("发送通知");
-  const AndroidNotificationDetails androidNotificationDetails =
-      AndroidNotificationDetails(
-    'your other channel id',
-    'your other channel name',
-    channelDescription: 'your other channel description',
-    sound: RawResourceAndroidNotificationSound('slow_spring_board'),
-  );
-  const DarwinNotificationDetails darwinNotificationDetails =
-      DarwinNotificationDetails(sound: 'slow_spring_board.aiff');
-  final LinuxNotificationDetails linuxPlatformChannelSpecifics =
-      LinuxNotificationDetails(
-    sound: AssetsLinuxSound('sound/slow_spring_board.mp3'),
-  );
-  final NotificationDetails notificationDetails = NotificationDetails(
-    android: androidNotificationDetails,
-    iOS: darwinNotificationDetails,
-    macOS: darwinNotificationDetails,
-    linux: linuxPlatformChannelSpecifics,
-  );
-  await flutterLocalNotificationsPlugin.show(
-    id++,
-    'custom sound notification title',
-    'custom sound notification body',
-    notificationDetails,
-  );
 }
 
 Future<void> zonedScheduleNotification(String title, String body, DateTime dateTime) async {
