@@ -111,17 +111,27 @@ class ArticleItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.lime,
+      elevation: 20,
+      shadowColor: Colors.green,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(
-          articleInfo.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 20),
+        Container(
+          padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+          child: Text(
+            articleInfo.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 20),
+          ),
         ),
-        Text(
-          articleInfo.abstract,
-          maxLines: 5,
-          overflow: TextOverflow.ellipsis,
+        Container(
+          padding: EdgeInsets.all(10),
+          child: Text(
+            articleInfo.abstract,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         Row(
           children: [
@@ -131,7 +141,8 @@ class ArticleItemWidget extends StatelessWidget {
                   launchUrlString(articleInfo.link);
                 }),
                 icon: Icon(Icons.share),
-                label: Text("link"))
+                label: Text("Link")),
+            Text("From：${articleInfo.source}")
           ],
         )
       ]),
