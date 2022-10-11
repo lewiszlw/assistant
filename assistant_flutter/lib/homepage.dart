@@ -8,7 +8,11 @@ class Homepage extends StatelessWidget {
   Widget build(BuildContext context) {
     requestNotificationPermissions();
     return Scaffold(
-        appBar: AppBar(title: const Text("个人助理工具集")),
+        appBar: AppBar(title: const Text("个人助理工具集"), actions: [
+          IconButton(icon: Icon(Icons.settings), onPressed: () {
+            Navigator.pushNamed(context, "preference_homepage");
+          },)
+        ],),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
