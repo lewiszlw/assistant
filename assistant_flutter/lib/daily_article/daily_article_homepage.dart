@@ -25,7 +25,7 @@ class DailyArticleHomepage extends StatefulWidget {
 
 class _DailyArticleHomepageState extends State<DailyArticleHomepage>
     with SingleTickerProviderStateMixin {
-  TabController? _tabController;
+  late TabController _tabController;
   int tabIndex = 0;
   List<ArticleInfo> articleInfos = [];
   ArticleHelper _articleHelper = ArticleHelper();
@@ -85,6 +85,13 @@ class _DailyArticleHomepageState extends State<DailyArticleHomepage>
           )
       ]),
     );
+  }
+
+  @override
+  void dispose() {
+    // 释放资源
+    _tabController.dispose();
+    super.dispose();
   }
 }
 

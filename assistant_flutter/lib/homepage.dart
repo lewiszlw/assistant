@@ -118,7 +118,7 @@ class ToolItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 210,
+      width: 180,
       height: 100,
       child: Card(
         color: color,
