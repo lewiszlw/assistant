@@ -5,7 +5,7 @@
 - [x] 每日早安
 - [x] 即时闹钟
 - [x] 每日看点
-- [ ] App配置 shared_preferences
+- [x] 系统配置
 - [ ] 电影推荐
 - [ ] App时长监督 app_usage/usage_stats
 
@@ -30,6 +30,11 @@
 - 安装依赖 `pip3 install -r requirements.txt`
 - 启动server `python3 main.py`
 
+通过 localtunnel 从外部访问局域网server
+1. `npm install -g localtunnel`
+2. `lt --port {server-port}`
+3. 参考 https://github.com/localtunnel/localtunnel , https://theboroer.github.io/localtunnel-www/ , https://stackoverflow.com/questions/5108483/access-localhost-from-the-internet
+
 ## 移动端 assistant_flutter
 个人助手app。
 
@@ -43,11 +48,6 @@
   - flutter ios真机调试：https://www.jianshu.com/p/58a6e272a038
 - alarm_clock
   - https://www.youtube.com/watch?v=iKxrt4ASR5Y
-
-通过 localtunnel 从外部访问局域网server
-1. `npm install -g localtunnel`
-2. `lt --port {server-port}`
-3. 参考 https://github.com/localtunnel/localtunnel , https://theboroer.github.io/localtunnel-www/ , https://stackoverflow.com/questions/5108483/access-localhost-from-the-internet
 
 ## 功能截图
 |  页面              | 截图  |
