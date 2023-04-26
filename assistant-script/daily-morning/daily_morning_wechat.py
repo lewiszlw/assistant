@@ -13,18 +13,24 @@ weather_city = config.WEATHER_CITY  # 例如 武汉
 lover_birthday = config.LOVER_BIRTHDAY  # 例如 02-01
 
 # 可通过微信公众平台测试号申请
-app_id = os.environ["WECHAT_APP_ID"]
-app_secret = os.environ["WECHAT_APP_SECRET"]
+app_id = "WECHAT_APP_ID"
+app_secret = "WECHAT_APP_SECRET"
 
 user_ids = config.WECHAT_USER_IDS
 template_id = config.WECHAT_TEMPLATE_ID
 
 
 def get_weather():
-  url = "http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&city=" + weather_city
-  res = requests.get(url).json()
-  weather = res['data']['list'][0]
-  return weather['weather'], math.floor(weather['temp'])
+  try:
+    url = "http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&city=" + weather_city
+    res = requests.get(url).json()
+    print("weather result: ", res)
+    weather = res['data']['list'][0]
+    return weather['weather'], math.floor(weather['temp'])
+  except Exception as e:
+    print(e)
+  return "未知", "未知"
+
 
 def love_days_count():
   delta = today - datetime.strptime(love_start_date, "%Y-%m-%d")

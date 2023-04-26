@@ -43,6 +43,7 @@
 2. `flutter run`
 
 参考
+- [《Flutter实战2》](https://github.com/flutterchina/flutter_in_action_2nd)（[源码](https://github.com/wendux/flutter_in_action_2)）
 - flutter
   - flutter开发环境搭建：https://docs.flutter.dev/get-started/install/macos
   - flutter ios真机调试：https://www.jianshu.com/p/58a6e272a038
